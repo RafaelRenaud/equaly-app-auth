@@ -1,0 +1,32 @@
+server:
+  servlet:
+    context-path: "/authentication_service/v1"
+  security:
+    tokenSecret: ${TOKEN_SECRET}
+
+spring:
+  redis:
+    database: ${CACHE_DATABASE}
+    host: ${CACHE_URL}
+    port: ${CACHE_PORT}
+    password: ${CACHE_SECRET}
+    timeout: 5000
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_SECRET}
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+logging:
+  level:
+    root: debug
