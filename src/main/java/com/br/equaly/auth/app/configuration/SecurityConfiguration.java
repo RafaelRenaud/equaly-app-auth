@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -21,17 +21,16 @@ public class SecurityConfiguration {
     @Autowired
     private SecurityFilterConfiguration securityFilterConfiguration;
 
-    private static final String[] postDisabledEndpoints = new String[]{
+    private static final String[] postAllowedEndpoints = new String[]{
             "/login",
-            "/recovery",
+            "/recovery"
+    };
+
+    private static final String[] patchAllowedEndpoints = new String[]{
             "/recovery/**"
     };
 
-    private static final String[] patchDisabledEndpoints = new String[]{
-            "/recovery/**"
-    };
-
-    private static final String[] systemDisabledEndpoints = new String[]{
+    private static final String[] systemAllowedEndpoints = new String[]{
             "/v3/api-docs/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
@@ -44,11 +43,11 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, postDisabledEndpoints).permitAll()
-                .requestMatchers(HttpMethod.PATCH, patchDisabledEndpoints).permitAll()
-                .requestMatchers(systemDisabledEndpoints).permitAll()
-                .anyRequest().authenticated()
-                .and().addFilterBefore(this.securityFilterConfiguration, UsernamePasswordAuthenticationFilter.class)
+                .requestMatchers(HttpMethod.POST, postAllowedEndpoints).permitAll()
+                .requestMatchers(HttpMethod.PATCH, patchAllowedEndpoints).permitAll()
+                .requestMatchers(systemAllowedEndpoints).permitAll()
+                .anyRequest().anonymous()
+                .and().addFilterBefore(this.securityFilterConfiguration, AnonymousAuthenticationFilter.class)
                 .build();
     }
 

@@ -9,6 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface UserRepository extends JpaRepository<User, Long> {
     UserDetails findByLogin(String login);
 
+    @Query(
+            "SELECT user FROM User user WHERE user.login = :login AND user.email= :email"
+    )
+    User findByLoginAndEmail(String login, String email);
+
     @Modifying(clearAutomatically = true)
     @Query(
            "UPDATE User user SET user.lastLogin = CURRENT_TIMESTAMP WHERE user.id = :id"

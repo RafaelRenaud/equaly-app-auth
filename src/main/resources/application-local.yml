@@ -1,6 +1,7 @@
 server:
+  port: ${SERVER_PORT}
   servlet:
-    context-path: "/authentication_service/v1"
+    context-path: "/authentication/v1"
   security:
     tokenSecret: ${TOKEN_SECRET}
 
@@ -26,6 +27,13 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+  rabbitmq:
+    host: ${MESSENGER_HOST}
+    port: ${MESSENGER_PORT}
+    username: ${MESSENGER_USERNAME}
+    password: ${MESSENGER_SECRET}
+    messenger:
+      queue: ${MESSENGER_QUEUE}
 
 logging:
   level:

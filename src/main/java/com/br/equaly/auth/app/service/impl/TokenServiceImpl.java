@@ -8,13 +8,13 @@ import com.auth0.jwt.interfaces.Claim;
 import com.br.equaly.auth.app.exception.InvalidTokenException;
 import com.br.equaly.auth.app.model.dto.refresh.RefreshSessionRequestDTO;
 import com.br.equaly.auth.app.model.entity.RecoveryToken;
-import com.br.equaly.auth.app.model.entity.RefreshToken;
+import com.br.equaly.auth.app.model.entity.SessionToken;
 import com.br.equaly.auth.app.model.entity.User;
 import com.br.equaly.auth.app.model.enums.EmailTemplate;
 import com.br.equaly.auth.app.model.vo.login.CorporationLoginVO;
 import com.br.equaly.auth.app.model.vo.login.DepartmentLoginVO;
 import com.br.equaly.auth.app.repository.RecoveryTokenRepository;
-import com.br.equaly.auth.app.repository.RefreshTokenRepository;
+import com.br.equaly.auth.app.repository.SessionTokenRepository;
 import com.br.equaly.auth.app.service.TokenService;
 import com.br.equaly.auth.app.util.Constants;
 import jakarta.transaction.Transactional;
@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService {
     private String tokenSecret;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private SessionTokenRepository sessionTokenRepository;
 
     @Autowired
     private RecoveryTokenRepository recoveryTokenRepository;
@@ -52,7 +52,6 @@ public class TokenServiceImpl implements TokenService {
             tokenInformations.put(Constants.EQUALY_JWT_CONTENT,
                     JWT.create()
                             .withIssuer(Constants.EQUALY_ISSUER)
-                            .withAudience(Constants.EQUALY_AUDIENCE)
                             .withExpiresAt(generateExpirationDate())
                             .withIssuedAt(Date.from(Instant.now()))
                             .withJWTId(tokenId)
@@ -74,8 +73,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String generateRefreshToken(String tokenId, User user, CorporationLoginVO corporationInformations, DepartmentLoginVO departmentInformations){
-        RefreshToken refreshTokenInformations = new RefreshToken(
+    public String generateSessionToken(String tokenId, User user, CorporationLoginVO corporationInformations, DepartmentLoginVO departmentInformations){
+        SessionToken sessionTokenInformations = new SessionToken(
                 tokenId,
                 user.getLogin(),
                 user.getEmail(),
@@ -88,29 +87,29 @@ public class TokenServiceImpl implements TokenService {
         );
 
         return Base64.getEncoder().encodeToString(
-                refreshTokenRepository.save(refreshTokenInformations)
+                sessionTokenRepository.save(sessionTokenInformations)
                         .getId().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
-    public RefreshToken getRefreshToken(RefreshSessionRequestDTO requestDTO){
+    public SessionToken getSessionToken(RefreshSessionRequestDTO requestDTO){
         String tokenId = new String(Base64.getDecoder().decode(requestDTO.refreshToken()));
         return Optional.ofNullable(
-                refreshTokenRepository.findById(tokenId).get()
+                sessionTokenRepository.findById(tokenId).get()
         ).orElseThrow(InvalidTokenException::new);
     }
 
     @Override
-    public RefreshToken getRefreshToken(String sessionId){
+    public SessionToken getSessionToken(String sessionId){
         return Optional.ofNullable(
-                refreshTokenRepository.findById(sessionId).get()
+                sessionTokenRepository.findById(sessionId).get()
         ).orElseThrow(InvalidTokenException::new);
     }
 
     @Override
     @Transactional
-    public void removeRefreshSession(String sessionId){
-        refreshTokenRepository.deleteById(sessionId);
+    public void removeSessionToken(String sessionId){
+        sessionTokenRepository.deleteById(sessionId);
     }
 
     @Override
@@ -134,7 +133,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Map<String, Claim> getTokenInformations(String token) throws JWTVerificationException{
+    public Map<String, Claim> getTokenInformations(String token) throws JWTVerificationException {
         Algorithm algorithm = Algorithm.HMAC256(this.tokenSecret);
         return JWT.require(algorithm)
                 .withIssuer(Constants.EQUALY_ISSUER)
@@ -151,12 +150,11 @@ public class TokenServiceImpl implements TokenService {
     public String generateRecoveryToken(User user){
         RecoveryToken recoveryToken = new RecoveryToken(
                 UUID.randomUUID().toString(),
-                EmailTemplate.RECOVERY.toString(),
+                EmailTemplate.ACCOUNT_RECOVERY,
+                LocalDateTime.now().toString(),
                 user.getName(),
                 user.getLogin(),
-                user.getEmail(),
-                LocalDateTime.now().toString()
-        );
+                user.getEmail());
 
         return Base64.getEncoder().encodeToString(
                 recoveryTokenRepository.save(recoveryToken).getId().getBytes(StandardCharsets.UTF_8));

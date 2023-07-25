@@ -4,7 +4,6 @@ public class Constants {
 
     //JWT Claims Constants
     public static final String EQUALY_ISSUER = "eQualy Authentication Service";
-    public static final String EQUALY_AUDIENCE = "equaly.api.com.br";
     public static final String EQUALY_APPLICATION_KEY = "application_key";
     public static final String EQUALY_CORPORATION_NAME = "corporation_name";
     public static final String EQUALY_USER_DEPARTMENT = "user_department";
@@ -18,4 +17,6 @@ public class Constants {
     public static final String EQUALY_JWT_CONTENT = "jwt";
     public static final String EQUALY_JWT_SUBJECT = "sub";
     public static final String EQUALY_TOKEN_PREFIX = "Bearer ";
+    public static final String EQUALY_TOKEN_NAME = "Authorization";
+
 }

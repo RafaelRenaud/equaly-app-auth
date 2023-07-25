@@ -7,7 +7,7 @@ import com.br.equaly.auth.app.exception.UserValidationException;
 import com.br.equaly.auth.app.model.dto.login.LoginResponseDTO;
 import com.br.equaly.auth.app.model.entity.Corporation;
 import com.br.equaly.auth.app.model.entity.Department;
-import com.br.equaly.auth.app.model.entity.RefreshToken;
+import com.br.equaly.auth.app.model.entity.SessionToken;
 import com.br.equaly.auth.app.model.entity.User;
 import com.br.equaly.auth.app.model.vo.login.CorporationLoginVO;
 import com.br.equaly.auth.app.model.vo.login.DepartmentLoginVO;
@@ -16,7 +16,6 @@ import com.br.equaly.auth.app.repository.UserRepository;
 import com.br.equaly.auth.app.util.Constants;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -123,16 +122,14 @@ public class AuthenticationServiceImpl implements UserDetailsService {
         );
     }
 
-    public User verifyUser(Map<String, Claim> accessToken, RefreshToken refreshToken){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public User verifyUser(Map<String, Claim> accessToken, SessionToken sessionToken){
+        User user = userRepository.findByLoginAndEmail(sessionToken.getLogin(), sessionToken.getEmail());
         String userTokenName = accessToken.get(Constants.EQUALY_USER_NAME).asString();
         String userTokenEmail = accessToken.get(Constants.EQUALY_JWT_SUBJECT).asString();
 
         if(user.getIsActive() && !user.getIsFirstAccess()
                 && userTokenName.equals(user.getName())
-                && refreshToken.getLogin().equals(user.getLogin())
-                && userTokenEmail.equals(user.getEmail()) && userTokenEmail.equals(refreshToken.getEmail()) && userTokenEmail.equals(user.getEmail())
+                && userTokenEmail.equals(user.getEmail()) && userTokenEmail.equals(user.getEmail())
         ){
             return user;
         }else{

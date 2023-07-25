@@ -1,22 +1,13 @@
 package com.br.equaly.auth.app.model.entity;
 
 import com.br.equaly.auth.app.model.enums.EmailTemplate;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.br.equaly.auth.app.util.UtilTools;
+import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.time.LocalDateTime;
-
-@Data
-@AllArgsConstructor
+@Getter
 @RedisHash(value = "RecoveryToken", timeToLive = 1800)
-public class RecoveryToken {
-
-    @Id
-    private String id;
-
-    private String templateType;
+public class RecoveryToken extends EmailToken{
 
     private String name;
 
@@ -24,6 +15,14 @@ public class RecoveryToken {
 
     private String email;
 
-    private String timestamp;
+    private String code;
+
+    public RecoveryToken(String id, EmailTemplate templateType, String timestamp, String name, String login, String email){
+        super(id, templateType, timestamp);
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.code = UtilTools.generateRecoveryCode();
+    }
 
 }

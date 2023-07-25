@@ -3,7 +3,6 @@ package com.br.equaly.auth.app.service.impl;
 import com.br.equaly.auth.app.exception.CorporationNotFoundException;
 import com.br.equaly.auth.app.exception.UserValidationException;
 import com.br.equaly.auth.app.model.dto.recovery.RecoveryPasswordRequestDTO;
-import com.br.equaly.auth.app.model.dto.recovery.RecoveryRequestDTO;
 import com.br.equaly.auth.app.model.entity.RecoveryToken;
 import com.br.equaly.auth.app.model.entity.User;
 import com.br.equaly.auth.app.repository.UserRepository;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +46,8 @@ public class RecoveryServiceImpl implements RecoveryService {
     @Override
     public Boolean isValidAccount(RecoveryToken recoveryToken, RecoveryPasswordRequestDTO recoveryRequestDTO) {
         if(recoveryToken.getEmail().equals(recoveryRequestDTO.email())
-        && recoveryToken.getLogin().equals(recoveryRequestDTO.login())){
+        && recoveryToken.getLogin().equals(recoveryRequestDTO.login())
+        && recoveryToken.getCode().equals(recoveryRequestDTO.code())){
             return true;
         }else{
             throw new UserValidationException();

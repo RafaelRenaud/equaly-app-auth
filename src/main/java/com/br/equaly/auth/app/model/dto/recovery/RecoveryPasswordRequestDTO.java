@@ -13,6 +13,10 @@ public record RecoveryPasswordRequestDTO(
         String email,
 
         @NotBlank
+        @Size(min = 6, max = 6)
+        String code,
+
+        @NotBlank
         String password
 ) {
 }

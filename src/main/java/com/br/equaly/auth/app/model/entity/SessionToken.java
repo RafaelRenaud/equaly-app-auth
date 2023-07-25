@@ -9,8 +9,8 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-@RedisHash(value = "RefreshToken", timeToLive = 7200)
-public class RefreshToken implements Serializable {
+@RedisHash(value = "SessionToken", timeToLive = 7200)
+public class SessionToken implements Serializable {
 
     @Id
     private String id;
