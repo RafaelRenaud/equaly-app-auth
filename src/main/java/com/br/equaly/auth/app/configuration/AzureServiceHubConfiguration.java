@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MessengerConfiguration {
+public class AzureServiceHubConfiguration {
 
-    @Value("${spring.rabbitmq.messenger.queue}")
-    private String messengerQueue;
+    @Value("${spring.jms.email.queue-name}")
+    private String queueName;
 
     @Bean
     public Queue queue(){
-        return new Queue(messengerQueue, true);
+        return new Queue(this.queueName, Boolean.TRUE);
     }
 }

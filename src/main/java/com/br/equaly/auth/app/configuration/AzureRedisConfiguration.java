@@ -12,7 +12,7 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class RedisConfiguration {
+public class AzureRedisConfiguration {
 
     @Value("${spring.redis.database}")
     private Integer redisDatabase;

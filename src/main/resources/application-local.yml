@@ -27,13 +27,12 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
-  rabbitmq:
-    host: ${MESSENGER_HOST}
-    port: ${MESSENGER_PORT}
-    username: ${MESSENGER_USERNAME}
-    password: ${MESSENGER_SECRET}
-    messenger:
-      queue: ${MESSENGER_QUEUE}
+  jms:
+    servicebus:
+      connection-string: ${SERVICE_HUB_URL}
+      pricing-tier: ${SERVICE_HUB_TIER}
+    email:
+      queue-name: ${SERVICE_HUB_QUEUE}
 
 logging:
   level:

@@ -5,7 +5,6 @@ import com.br.equaly.auth.app.exception.DepartmentNotFoundException;
 import com.br.equaly.auth.app.exception.InvalidTokenException;
 import com.br.equaly.auth.app.exception.UserValidationException;
 import com.br.equaly.auth.app.model.dto.error.ErrorHandlerDTO;
-import org.springframework.amqp.rabbit.listener.QueuesNotAvailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ public class ErrorController {
                 .body(new ErrorHandlerDTO(HttpStatus.BAD_REQUEST, e));
     }
 
-    @ExceptionHandler({ConnectException.class, QueuesNotAvailableException.class})
+    @ExceptionHandler({ConnectException.class})
     public ResponseEntity serviceUnavailable(){
         return ResponseEntity
                 .status(HttpStatusCode.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()))

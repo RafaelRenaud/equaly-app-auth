@@ -5,8 +5,8 @@ import com.br.equaly.auth.app.service.RecoveryEmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 public class RecoveryEmailServiceImpl implements RecoveryEmailService {
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private JmsTemplate jmsTemplate;
 
     @Autowired
     private Queue queue;
@@ -23,7 +23,7 @@ public class RecoveryEmailServiceImpl implements RecoveryEmailService {
     @Override
     public void sendRecoveryEmail(RecoveryEmailRequestDTO recoveryEmailRequestDTO) throws IOException {
         ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        rabbitTemplate.convertAndSend(
+        jmsTemplate.convertAndSend(
                 this.queue.getName(),
                 objectWriter.writeValueAsBytes(recoveryEmailRequestDTO)
         );

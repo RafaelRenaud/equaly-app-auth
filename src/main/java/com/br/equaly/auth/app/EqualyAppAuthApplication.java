@@ -1,11 +1,11 @@
 package com.br.equaly.auth.app;
 
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jms.annotation.EnableJms;
 
 @SpringBootApplication
-@EnableRabbit
+@EnableJms
 public class EqualyAppAuthApplication {
 
 	public static void main(String[] args) {
